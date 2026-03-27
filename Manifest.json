@@ -1,0 +1,21 @@
+{
+  "short_name": "31 May Tax",
+  "name": "Degmada 31 May Digital Tax System",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": "/dhh-tax/index.html",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/dhh-tax/",
+  "theme_color": "#2c3e50"
+}
