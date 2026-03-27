@@ -1,1 +1,65 @@
-https://g.co/gemini/share/e8518d0990fa
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>31 May Digital Tax - Redirect</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #f4f7f6;
+            text-align: center;
+        }
+        .loader-box {
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .btn-go {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="loader-box">
+    <img src="logo.jpg" alt="Logo" style="width:100px; border-radius:50%;" onerror="this.src='https://via.placeholder.com/100'">
+    <h2>Nidaamka Degmada 31 May</h2>
+    <p>Fadlan sug, waxaad u gudbaysaa System-ka Cashuuraha...</p>
+    
+    <!-- HALKAN KU BEDEL: Geli URL-ka "Web App" ee aad ka soo minguubisay Google Apps Script -->
+    <a id="appLink" href="#" class="btn-go">GUJI HALKAN SI AAD U GASHO</a>
+</div>
+
+<script>
+    // 1. Nuqul ka soo qaad (Copy) Web App URL-ka aad ka heshay Google App Script (kaas oo ku dhamaanaya /exec)
+    const googleWebAppUrl = "https://script.google.com/macros/s/AKfycbxuiFTaCHQuFCc79z2YXunDoZq6KOq6fS9hVvk2UWsXUYVJ6VkNZBC0793Rwil9O8ZL/exec";
+
+    // 2. Redirect automatic ah
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const houseId = urlParams.get('id') || "HOUSE-DEFAULT";
+        const finalUrl = googleWebAppUrl + "?id=" + houseId;
+        
+        document.getElementById('appLink').href = finalUrl;
+        
+        // Haddii aad rabto inuu iskiis u wareego (Auto-redirect):
+        // window.location.href = finalUrl;
+    };
+</script>
+
+</body>
+</html>
