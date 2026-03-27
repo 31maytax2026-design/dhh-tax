@@ -3,62 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>31 May Digital Tax - Redirect</title>
+    <title>31 May Digital Tax System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #27ae60;
+            --accent-color: #f39c12;
+            --light-bg: #f8f9fa;
+        }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            background: #f4f7f6;
-            text-align: center;
+            padding: 15px;
         }
-        .loader-box {
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
         }
-        .btn-go {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 25px;
-            background: #27ae60;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: var(--primary-color);
             color: white;
-            text-decoration: none;
-            border-radius: 8px;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1.5px solid #dee2e6;
+        }
+
+        .btn-main {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+
+        .btn-main:hover {
+            background-color: #219150;
+            transform: scale(0.98);
+        }
+
+        #dateTimeBox {
+            font-size: 0.85rem;
+            color: #ecf0f1;
+            margin-top: 10px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .success-msg {
+            color: var(--secondary-color);
             font-weight: bold;
+            text-align: center;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div class="loader-box">
-    <img src="logo.jpg" alt="Logo" style="width:100px; border-radius:50%;" onerror="this.src='https://via.placeholder.com/100'">
-    <h2>Nidaamka Degmada 31 May</h2>
-    <p>Fadlan sug, waxaad u gudbaysaa System-ka Cashuuraha...</p>
-    
-    <!-- HALKAN KU BEDEL: Geli URL-ka "Web App" ee aad ka soo minguubisay Google Apps Script -->
-    <a id="appLink" href="#" class="btn-go">GUJI HALKAN SI AAD U GASHO</a>
+<div class="app-container">
+    <!-- Header -->
+    <div class="header">
+        <img src="logo.jpg" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/80?text=31+MAY'">
+        <h4>Degmada 31 May</h4>
+        <p class="mb-1">New Hargeisa - District 31 May</p>
+        <div id="dateTimeBox">
+            <span id="hijriDate"></span> | <span id="clock"></span>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Login Screen -->
+        <div id="login-screen">
+            <h5 class="text-center mb-4">Gali Aqoonsigaaga</h5>
+            <select id="role" class="form-select">
+                <option value="Tax">Shaqaalaha Cashuurta</option>
+                <option value="Waste">Shaqaalaha Qashinka</option>
+            </select>
+            <input type="text" id="staffId" class="form-control" placeholder="ID Card # (tusaale: 112233)">
+            <input type="password" id="pin" class="form-control" placeholder="Password-ka Maalinlaha ah">
+            <button onclick="handleLogin()" class="btn btn-main">GALI SYSTEM-KA</button>
+            <p id="loginError" class="text-danger text-center mt-2" style="display:none;"></p>
+        </div>
+
+        <!-- Action Screen (Hidden by Default) -->
+        <div id="action-screen" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 id="userNameDisplay">Dhaqdhaqaaqa Guriga</h6>
+                <button class="btn btn-sm btn-outline-danger" onclick="location.reload()">Logout</button>
+            </div>
+            
+            <div class="card p-3 mb-3 border-0 bg-light">
+                <small class="text-muted">Aqoonsiga Guriga (House ID):</small>
+                <h5 id="houseIdLabel" class="text-primary">Loading...</h5>
+            </div>
+
+            <label class="form-label small fw-bold">Nooca Lacagta:</label>
+            <select id="taxType" class="form-select">
+                <option value="Cashuur Liisan">Cashuur Liisan</option>
+                <option value="Ardiyad">Ardiyad</option>
+                <option value="Ganaax">Ganaax</option>
+            </select>
+
+            <label class="form-label small fw-bold">Lacagta ($):</label>
+            <input type="number" id="amt" class="form-control" placeholder="Gali lacagta caddaanka ah">
+
+            <label class="form-label small fw-bold">Sawirka Juwanka:</label>
+            <input type="file" id="receiptImg" class="form-control" accept="image/*" capture="camera">
+
+            <label class="form-label small fw-bold">Sawirka Wajahada:</label>
+            <input type="file" id="faceImg" class="form-control" accept="image/*" capture="camera">
+
+            <button onclick="handleSave()" id="saveBtn" class="btn btn-main">SAVE & UPDATE MAP</button>
+            
+            <div class="loading-spinner" id="spinner">
+                <div class="spinner-border text-success" role="status"></div>
+                <p class="mt-2">Fadlan sug, xogta ayaa la kaydinayaa...</p>
+            </div>
+            <p class="success-msg" id="successMsg">Xogta waa la keydiyey! ✅</p>
+        </div>
+    </div>
+
+    <footer class="text-center p-3 text-muted small">
+        © 2026 31 May Tax | dhh-tax System
+    </footer>
 </div>
 
 <script>
-    // 1. Nuqul ka soo qaad (Copy) Web App URL-ka aad ka heshay Google App Script (kaas oo ku dhamaanaya /exec)
-    const googleWebAppUrl = "/AKfycbxuiFTaCHQuFCc79z2YXunDoZq6KOq6fS9hVvk2UWsXUYVJ6VkNZBC0793Rwil9O8ZL/";
-
-    // 2. Redirect automatic ah
+    // URL-ka Application-ka iyo House ID
+    let currentHouseId = "H-001"; // Default haddii aan ID la helin
+    
+    // Helitaanka House ID ka socda URL-ka
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
-        const houseId = urlParams.get('id') || "HOUSE-DEFAULT";
-        const finalUrl = googleWebAppUrl + "?id=" + houseId;
-        
-        document.getElementById('appLink').href = finalUrl;
-        
-        // Haddii aad rabto inuu iskiis u wareego (Auto-redirect):
-        // window.location.href = finalUrl;
+        const idFromUrl = urlParams.get('id');
+        if (idFromUrl) {
+            currentHouseId = idFromUrl;
+        }
+        document.getElementById('houseIdLabel').innerText = currentHouseId;
+        updateClock();
     };
+
+    // Saacada iyo Taariikhda Hijriga
+    function updateClock() {
+        setInterval(() => {
+            let now = new Date();
+            let hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {day:'numeric', month:'long', year:'numeric'}).format(now);
+            document.getElementById('hijriDate').innerText = hijri;
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+        }, 1000);
+    }
+
+    // Login Logic
+    function handleLogin() {
+        const pin = document.getElementById('pin').value;
+        const staffId = document.getElementById('staffId').value;
+        const errorMsg = document.getElementById('loginError');
+
+        // Password-ka aad codsatay: 9792
+        if (pin === "9792") {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('action-screen').style.display = 'block';
+            document.getElementById('userNameDisplay').innerText = "Staff: " + staffId;
+        } else {
+            errorMsg.innerText = "Password-ka aad gelisay waa khaldan yahay!";
+            errorMsg.style.display = 'block';
+        }
+    }
+
+    // Save Data Logic
+    async function handleSave() {
+        const amt = document.getElementById('amt').value;
+        if(!amt) {
+            alert("Fadlan geli lacagta!");
+            return;
+        }
+
+        document.getElementById('saveBtn').style.display = 'none';
+        document.getElementById('spinner').style.display = 'block';
+
+        // Halkan waxaa geli doona isku-xirka Google Apps Script (google.script.run)
+        // Haddii aad ku jirto preview-ga kan, waxaan ku tusaayaa Simulation
+        setTimeout(() => {
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('successMsg').style.display = 'block';
+            
+            // Ka dib 3 ilbiriqsi u wareeji qaybta ugu dambaysa
+            setTimeout(() => {
+                location.reload();
+            }, 3000);
+        }, 2000);
+    }
 </script>
 
 </body>
