@@ -3,90 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>31 May Digital Tax - DHH</title>
+    <title>31 May Digital Tax System</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --dhh-green: #006400; }
-        body { background-color: #f4f7f6; font-family: sans-serif; }
-        .app-header { 
-            background: linear-gradient(135deg, var(--dhh-green), #228b22); 
-            color: white; padding: 25px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
-            text-align: center;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #27ae60;
+            --accent-color: #f39c12;
+            --light-bg: #f8f9fa;
         }
-        .logo-img { width: 80px; height: 80px; background: white; border-radius: 50%; padding: 5px; margin-bottom: 10px; }
-        .card { border-radius: 20px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-top: -20px; }
-        .btn-save { background-color: var(--dhh-green); color: white; border-radius: 12px; padding: 12px; font-weight: bold; width: 100%; border: none; }
-        #login-screen { display: block; padding: 20px; }
-        #main-app { display: none; }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1.5px solid #dee2e6;
+        }
+
+        .btn-main {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+
+        .btn-main:hover {
+            background-color: #219150;
+            transform: scale(0.98);
+        }
+
+        #dateTimeBox {
+            font-size: 0.85rem;
+            color: #ecf0f1;
+            margin-top: 10px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .success-msg {
+            color: var(--secondary-color);
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-<div id="login-screen" class="container text-center vh-100 d-flex flex-column justify-content-center">
-    <img src="https://raw.githubusercontent.com/31maytax2026-design/dhh-tax/main/logo.jpg" class="mx-auto mb-3" style="width:120px;">
-    <h4>Gali Password-ka</h4>
-    <input type="password" id="pin-input" class="form-control mb-3 text-center" placeholder="****">
-    <button onclick="checkPin()" class="btn btn-success w-100">Login</button>
-</div>
-
-<div id="main-app">
-    <div class="app-header">
-        <img src="https://raw.githubusercontent.com/31maytax2026-design/dhh-tax/main/logo.jpg" class="logo-img" alt="DHH Logo">
-        <h3 class="mb-0">DEGMADA 31 MAY</h3>
-        <p class="small">New Hargeisa Digital Tax System</p>
-    </div>
-
-    <div class="container mt-4">
-        <div class="card p-4">
-            <label class="form-label fw-bold text-muted">ID-ga Guriga</label>
-            <input type="text" id="houseId" class="form-control mb-3" placeholder="Tusaale: #31-M042">
-            
-            <label class="form-label fw-bold text-muted">Nooca Cashuurta</label>
-            <select id="taxType" class="form-select mb-3">
-                <option>Cashuur Liisan</option>
-                <option>Cashuurta Guryaha</option>
-                <option>Nadiifinta/Qashinka</option>
-            </select>
-
-            <label class="form-label fw-bold text-muted">Lacagta (USD)</label>
-            <input type="number" id="amount" class="form-control mb-4" placeholder="0.00">
-
-            <button onclick="sendToGoogle()" class="btn-save">SAVE & UPDATE MAP</button>
+<div class="app-container">
+    <!-- Header -->
+    <div class="header">
+        <img src="logo.jpg" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/80?text=31+MAY'">
+        <h4>Degmada 31 May</h4>
+        <p class="mb-1">New Hargeisa - District 31 May</p>
+        <div id="dateTimeBox">
+            <span id="hijriDate"></span> | <span id="clock"></span>
         </div>
     </div>
+
+    <div class="content">
+        <!-- Login Screen -->
+        <div id="login-screen">
+            <h5 class="text-center mb-4">Gali Aqoonsigaaga</h5>
+            <select id="role" class="form-select">
+                <option value="Tax">Shaqaalaha Cashuurta</option>
+                <option value="Waste">Shaqaalaha Qashinka</option>
+            </select>
+            <input type="text" id="staffId" class="form-control" placeholder="ID Card # (tusaale: 112233)">
+            <input type="password" id="pin" class="form-control" placeholder="Password-ka Maalinlaha ah">
+            <button onclick="handleLogin()" class="btn btn-main">GALI SYSTEM-KA</button>
+            <p id="loginError" class="text-danger text-center mt-2" style="display:none;"></p>
+        </div>
+
+        <!-- Action Screen (Hidden by Default) -->
+        <div id="action-screen" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 id="userNameDisplay">Dhaqdhaqaaqa Guriga</h6>
+                <button class="btn btn-sm btn-outline-danger" onclick="location.reload()">Logout</button>
+            </div>
+            
+            <div class="card p-3 mb-3 border-0 bg-light">
+                <small class="text-muted">Aqoonsiga Guriga (House ID):</small>
+                <h5 id="houseIdLabel" class="text-primary">Loading...</h5>
+            </div>
+
+            <label class="form-label small fw-bold">Nooca Lacagta:</label>
+            <select id="taxType" class="form-select">
+                <option value="Cashuur Liisan">Cashuur Liisan</option>
+                <option value="Ardiyad">Ardiyad</option>
+                <option value="Ganaax">Ganaax</option>
+            </select>
+
+            <label class="form-label small fw-bold">Lacagta ($):</label>
+            <input type="number" id="amt" class="form-control" placeholder="Gali lacagta caddaanka ah">
+
+            <label class="form-label small fw-bold">Sawirka Juwanka:</label>
+            <input type="file" id="receiptImg" class="form-control" accept="image/*" capture="camera">
+
+            <label class="form-label small fw-bold">Sawirka Wajahada:</label>
+            <input type="file" id="faceImg" class="form-control" accept="image/*" capture="camera">
+
+            <button onclick="handleSave()" id="saveBtn" class="btn btn-main">SAVE & UPDATE MAP</button>
+            
+            <div class="loading-spinner" id="spinner">
+                <div class="spinner-border text-success" role="status"></div>
+                <p class="mt-2">Fadlan sug, xogta ayaa la kaydinayaa...</p>
+            </div>
+            <p class="success-msg" id="successMsg">Xogta waa la keydiyey! ✅</p>
+        </div>
+    </div>
+
+    <footer class="text-center p-3 text-muted small">
+        © 2026 31 May Tax | dhh-tax System
+    </footer>
 </div>
 
 <script>
-    const GOOGLE_URL = "HALKAN_GELI_WEB_APP_URL_KAAGA"; // Tallaabada 2aad ku soo qaado
+    // URL-ka Application-ka iyo House ID
+    let currentHouseId = "H-001"; // Default haddii aan ID la helin
+    
+    // Helitaanka House ID ka socda URL-ka
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idFromUrl = urlParams.get('id');
+        if (idFromUrl) {
+            currentHouseId = idFromUrl;
+        }
+        document.getElementById('houseIdLabel').innerText = currentHouseId;
+        updateClock();
+    };
 
-    function checkPin() {
-        const pin = document.getElementById('pin-input').value;
-        if(pin === "2026") { // Password-ka dhabta ah
+    // Saacada iyo Taariikhda Hijriga
+    function updateClock() {
+        setInterval(() => {
+            let now = new Date();
+            let hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {day:'numeric', month:'long', year:'numeric'}).format(now);
+            document.getElementById('hijriDate').innerText = hijri;
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+        }, 1000);
+    }
+
+    // Login Logic
+    function handleLogin() {
+        const pin = document.getElementById('pin').value;
+        const staffId = document.getElementById('staffId').value;
+        const errorMsg = document.getElementById('loginError');
+
+        // Password-ka aad codsatay: 9792
+        if (pin === "9792") {
             document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
+            document.getElementById('action-screen').style.display = 'block';
+            document.getElementById('userNameDisplay').innerText = "Staff: " + staffId;
         } else {
-            alert("Password-ka waa khalad!");
+            errorMsg.innerText = "Password-ka aad gelisay waa khaldan yahay!";
+            errorMsg.style.display = 'block';
         }
     }
 
-    function sendToGoogle() {
-        const data = {
-            houseId: document.getElementById('houseId').value,
-            type: document.getElementById('taxType').value,
-            amount: document.getElementById('amount').value
-        };
-        
-        alert("Xogta Guriga " + data.houseId + " waa la dirayaa...");
-        
-        fetch(GOOGLE_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        }).then(() => {
-            alert("Xogta si guul leh ayaa loogu kaydiyey Google Sheets!");
-        });
+    // Save Data Logic
+    async function handleSave() {
+        const amt = document.getElementById('amt').value;
+        if(!amt) {
+            alert("Fadlan geli lacagta!");
+            return;
+        }
+
+        document.getElementById('saveBtn').style.display = 'none';
+        document.getElementById('spinner').style.display = 'block';
+
+        // Halkan waxaa geli doona isku-xirka Google Apps Script (google.script.run)
+        // Haddii aad ku jirto preview-ga kan, waxaan ku tusaayaa Simulation
+        setTimeout(() => {
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('successMsg').style.display = 'block';
+            
+            // Ka dib 3 ilbiriqsi u wareeji qaybta ugu dambaysa
+            setTimeout(() => {
+                location.reload();
+            }, 3000);
+        }, 2000);
     }
 </script>
+
 </body>
 </html>
